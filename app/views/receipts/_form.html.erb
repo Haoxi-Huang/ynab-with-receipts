@@ -1,0 +1,62 @@
+<%= form_with(model: receipt, class: "space-y-6") do |f| %>
+  <% if receipt.errors.any? %>
+    <div class="rounded-md bg-red-50 p-4">
+      <h3 class="text-sm font-medium text-red-800"><%= pluralize(receipt.errors.count, "error") %> prevented saving:</h3>
+      <ul class="mt-2 list-disc pl-5 text-sm text-red-700">
+        <% receipt.errors.full_messages.each do |msg| %>
+          <li><%= msg %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div data-controller="preview">
+    <label class="block text-sm font-medium text-gray-700 mb-1">Receipt Photo</label>
+    <div class="mt-1 flex justify-center rounded-lg border-2 border-dashed border-gray-300 px-6 py-10 hover:border-gray-400 transition-colors"
+         data-preview-target="dropzone">
+      <div class="text-center">
+        <div data-preview-target="placeholder" class="<%= 'hidden' if receipt.image.attached? %>">
+          <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6.827 6.175A2.31 2.31 0 0 1 5.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 0 0-1.134-.175 2.31 2.31 0 0 1-1.64-1.055l-.822-1.316a2.192 2.192 0 0 0-1.736-1.039 48.774 48.774 0 0 0-5.232 0 2.192 2.192 0 0 0-1.736 1.039l-.821 1.316Z" />
+            <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 12.75a4.5 4.5 0 1 1-9 0 4.5 4.5 0 0 1 9 0ZM18.75 10.5h.008v.008h-.008V10.5Z" />
+          </svg>
+          <p class="mt-2 text-sm text-gray-600">Take a photo or choose a file</p>
+        </div>
+        <img data-preview-target="image" class="mx-auto max-h-64 rounded-lg <%= 'hidden' unless receipt.image.attached? %>"
+             <% if receipt.image.attached? %>src="<%= url_for(receipt.image) %>"<% end %> />
+        <%= f.file_field :image,
+                         accept: "image/*",
+                         capture: "environment",
+                         class: "mt-4 block w-full text-sm text-gray-500 file:mr-4 file:rounded-md file:border-0 file:bg-indigo-50 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-indigo-700 hover:file:bg-indigo-100",
+                         data: { preview_target: "input", action: "change->preview#show" } %>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+    <div>
+      <label class="block text-sm font-medium text-gray-700 mb-1">Store Name</label>
+      <%= f.text_field :store_name, class: "block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm", placeholder: "e.g. Walmart" %>
+    </div>
+
+    <div>
+      <label class="block text-sm font-medium text-gray-700 mb-1">Amount</label>
+      <%= f.number_field :amount, step: 0.01, min: 0, class: "block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm", placeholder: "0.00" %>
+    </div>
+
+    <div>
+      <label class="block text-sm font-medium text-gray-700 mb-1">Date <span class="text-red-500">*</span></label>
+      <%= f.date_field :receipt_date, class: "block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm", required: true %>
+    </div>
+  </div>
+
+  <div>
+    <label class="block text-sm font-medium text-gray-700 mb-1">Notes</label>
+    <%= f.text_area :notes, rows: 3, class: "block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm", placeholder: "Optional notes..." %>
+  </div>
+
+  <div class="flex items-center gap-4">
+    <%= f.submit class: "inline-flex items-center rounded-md bg-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 cursor-pointer" %>
+    <%= link_to "Cancel", (receipt.persisted? ? receipt_path(receipt) : receipts_path), class: "text-sm font-medium text-gray-600 hover:text-gray-500" %>
+  </div>
+<% end %>

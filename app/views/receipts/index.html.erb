@@ -1,0 +1,51 @@
+<div class="space-y-6">
+  <div class="flex items-center justify-between">
+    <h1 class="text-2xl font-bold text-gray-900">
+      <%= params[:filter]&.capitalize || "All" %> Receipts
+      <span class="text-lg font-normal text-gray-500">(<%= @receipts.size %>)</span>
+    </h1>
+  </div>
+
+  <% if @receipts.any? %>
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+      <% @receipts.each do |receipt| %>
+        <%= link_to receipt_path(receipt), class: "group block rounded-lg overflow-hidden bg-white shadow-sm border border-gray-200 hover:shadow-md transition-shadow" do %>
+          <div class="aspect-[3/4] overflow-hidden bg-gray-100">
+            <% if receipt.image.attached? %>
+              <%= image_tag receipt.image.variant(resize_to_fill: [400, 533]),
+                           class: "h-full w-full object-cover group-hover:scale-105 transition-transform duration-200",
+                           loading: "lazy" %>
+            <% end %>
+          </div>
+          <div class="p-3 space-y-1">
+            <div class="flex items-center justify-between">
+              <span class="text-sm font-medium text-gray-900 truncate">
+                <%= receipt.store_name.presence || "Untitled" %>
+              </span>
+              <% if receipt.linked? %>
+                <span class="inline-flex items-center rounded-full bg-green-100 px-2 py-0.5 text-xs font-medium text-green-700">Linked</span>
+              <% else %>
+                <span class="inline-flex items-center rounded-full bg-yellow-100 px-2 py-0.5 text-xs font-medium text-yellow-700">Unlinked</span>
+              <% end %>
+            </div>
+            <p class="text-xs text-gray-500"><%= receipt.receipt_date.strftime("%b %d, %Y") %></p>
+            <% if receipt.amount.present? %>
+              <p class="text-sm font-semibold text-gray-700">$<%= number_with_precision(receipt.amount, precision: 2) %></p>
+            <% end %>
+          </div>
+        <% end %>
+      <% end %>
+    </div>
+  <% else %>
+    <div class="text-center py-16">
+      <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909M3.75 21h16.5A2.25 2.25 0 0 0 22.5 18.75V5.25A2.25 2.25 0 0 0 20.25 3H3.75A2.25 2.25 0 0 0 1.5 5.25v13.5A2.25 2.25 0 0 0 3.75 21z" />
+      </svg>
+      <h3 class="mt-2 text-sm font-semibold text-gray-900">No receipts</h3>
+      <p class="mt-1 text-sm text-gray-500">Get started by uploading a receipt photo.</p>
+      <div class="mt-6">
+        <%= link_to "Upload Receipt", new_receipt_path, class: "inline-flex items-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500" %>
+      </div>
+    </div>
+  <% end %>
+</div>

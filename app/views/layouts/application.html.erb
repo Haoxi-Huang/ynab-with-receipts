@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html class="h-full bg-gray-50">
+  <head>
+    <title>Receipts for YNAB</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+    <%= stylesheet_link_tag "tailwind", "data-turbo-track": "reload" %>
+    <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
+    <%= javascript_importmap_tags %>
+  </head>
+
+  <body class="h-full">
+    <% if logged_in? %>
+      <nav class="bg-white shadow-sm border-b border-gray-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div class="flex justify-between h-16 items-center">
+            <div class="flex items-center gap-6">
+              <%= link_to "Receipts for YNAB", root_path, class: "text-lg font-bold text-gray-900" %>
+              <%= link_to "All", receipts_path, class: "text-sm font-medium #{params[:filter].blank? ? 'text-indigo-600' : 'text-gray-500 hover:text-gray-700'}" %>
+              <%= link_to "Unlinked", receipts_path(filter: :unlinked), class: "text-sm font-medium #{params[:filter] == 'unlinked' ? 'text-indigo-600' : 'text-gray-500 hover:text-gray-700'}" %>
+              <%= link_to "Linked", receipts_path(filter: :linked), class: "text-sm font-medium #{params[:filter] == 'linked' ? 'text-indigo-600' : 'text-gray-500 hover:text-gray-700'}" %>
+            </div>
+            <div class="flex items-center gap-4">
+              <%= link_to "Upload Receipt", new_receipt_path, class: "inline-flex items-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500" %>
+              <span class="text-sm text-gray-500"><%= current_user.email %></span>
+              <%= button_to "Sign out", logout_path, method: :delete, class: "text-sm text-gray-500 hover:text-gray-700" %>
+            </div>
+          </div>
+        </div>
+      </nav>
+    <% end %>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <% if flash[:notice] && !action_name.in?(%w[new]) %>
+        <div class="mb-6 rounded-md bg-green-50 p-4">
+          <p class="text-sm text-green-700"><%= flash[:notice] %></p>
+        </div>
+      <% end %>
+
+      <% if flash[:alert] && !action_name.in?(%w[new]) %>
+        <div class="mb-6 rounded-md bg-red-50 p-4">
+          <p class="text-sm text-red-700"><%= flash[:alert] %></p>
+        </div>
+      <% end %>
+
+      <%= yield %>
+    </main>
+
+    <% if logged_in? %>
+      <footer class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 text-center text-xs text-gray-400">
+        <p>We are not affiliated, associated, or in any way officially connected with YNAB or any of its subsidiaries or affiliates. The official YNAB website can be found at <a href="https://www.ynab.com" class="underline">www.ynab.com</a>.</p>
+        <p class="mt-1">The names YNAB and You Need A Budget, as well as related names, tradenames, marks, trademarks, emblems, and images are registered trademarks of YNAB.</p>
+      </footer>
+    <% end %>
+  </body>
+</html>

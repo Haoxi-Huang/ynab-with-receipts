@@ -1,0 +1,93 @@
+<div class="space-y-6">
+  <div class="flex items-center justify-between">
+    <div class="flex items-center gap-3">
+      <%= link_to "&larr; Back".html_safe, receipts_path, class: "text-sm text-gray-500 hover:text-gray-700" %>
+      <h1 class="text-2xl font-bold text-gray-900"><%= @receipt.store_name.presence || "Receipt" %></h1>
+      <% if @receipt.linked? %>
+        <span class="inline-flex items-center rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-700">Linked</span>
+      <% else %>
+        <span class="inline-flex items-center rounded-full bg-yellow-100 px-2.5 py-0.5 text-xs font-medium text-yellow-700">Unlinked</span>
+      <% end %>
+    </div>
+    <div class="flex items-center gap-2">
+      <%= link_to "Edit", edit_receipt_path(@receipt), class: "inline-flex items-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50" %>
+      <%= button_to "Delete", receipt_path(@receipt), method: :delete,
+          data: { turbo_confirm: "Are you sure you want to delete this receipt?" },
+          class: "inline-flex items-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500" %>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+    <%# Receipt image %>
+    <div class="space-y-4">
+      <% if @receipt.image.attached? %>
+        <div class="rounded-lg overflow-hidden bg-white shadow-sm border border-gray-200" data-controller="zoom">
+          <%= image_tag @receipt.image,
+                       class: "w-full cursor-zoom-in transition-transform duration-200",
+                       data: { zoom_target: "image", action: "click->zoom#toggle" } %>
+        </div>
+      <% end %>
+
+      <dl class="grid grid-cols-2 gap-4 text-sm">
+        <div>
+          <dt class="text-gray-500">Date</dt>
+          <dd class="font-medium text-gray-900"><%= @receipt.receipt_date.strftime("%B %d, %Y") %></dd>
+        </div>
+        <% if @receipt.amount.present? %>
+          <div>
+            <dt class="text-gray-500">Amount</dt>
+            <dd class="font-medium text-gray-900">$<%= number_with_precision(@receipt.amount, precision: 2) %></dd>
+          </div>
+        <% end %>
+        <% if @receipt.notes.present? %>
+          <div class="col-span-2">
+            <dt class="text-gray-500">Notes</dt>
+            <dd class="font-medium text-gray-900"><%= @receipt.notes %></dd>
+          </div>
+        <% end %>
+      </dl>
+    </div>
+
+    <%# YNAB transaction link %>
+    <div class="space-y-4">
+      <h2 class="text-lg font-semibold text-gray-900">YNAB Transaction</h2>
+
+      <% if @receipt.linked? %>
+        <div class="rounded-lg bg-white shadow-sm border border-gray-200 p-6 space-y-3">
+          <div class="flex items-center justify-between">
+            <span class="text-sm font-medium text-gray-500">Payee</span>
+            <span class="text-sm font-semibold text-gray-900"><%= @receipt.ynab_payee_name %></span>
+          </div>
+          <div class="flex items-center justify-between">
+            <span class="text-sm font-medium text-gray-500">Account</span>
+            <span class="text-sm text-gray-900"><%= @receipt.ynab_account_name %></span>
+          </div>
+          <div class="flex items-center justify-between">
+            <span class="text-sm font-medium text-gray-500">Amount</span>
+            <span class="text-sm font-semibold text-gray-900">$<%= number_with_precision(@receipt.ynab_amount_dollars&.abs, precision: 2) %></span>
+          </div>
+          <div class="flex items-center justify-between">
+            <span class="text-sm font-medium text-gray-500">Date</span>
+            <span class="text-sm text-gray-900"><%= @receipt.ynab_date&.strftime("%B %d, %Y") %></span>
+          </div>
+          <div class="pt-3 border-t border-gray-100">
+            <%= button_to "Unlink Transaction", receipt_match_path(@receipt), method: :delete,
+                data: { turbo_confirm: "Unlink this YNAB transaction?" },
+                class: "text-sm font-medium text-red-600 hover:text-red-500" %>
+          </div>
+        </div>
+      <% else %>
+        <div class="rounded-lg border-2 border-dashed border-gray-300 p-6 text-center">
+          <p class="text-sm text-gray-500 mb-4">No YNAB transaction linked yet.</p>
+          <%= link_to new_receipt_match_path(@receipt),
+              class: "inline-flex items-center rounded-md bg-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500",
+              data: { turbo_frame: "match_modal" } do %>
+            Find &amp; Link Transaction
+          <% end %>
+        </div>
+      <% end %>
+
+      <%= turbo_frame_tag "match_modal" %>
+    </div>
+  </div>
+</div>
