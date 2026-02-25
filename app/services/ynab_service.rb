@@ -34,10 +34,15 @@ class YnabService
       .sort_by { |m| -m[:score] }
   end
 
-  def update_transaction_memo(transaction_id, memo)
-    save_txn = YNAB::SaveTransaction.new(memo: memo)
+  def update_transaction_memo(transaction, memo)
+    save_txn = YNAB::SaveTransaction.new(
+      account_id: transaction.account_id,
+      date: transaction.date,
+      amount: transaction.amount,
+      memo: memo
+    )
     wrapper = YNAB::PutTransactionWrapper.new(transaction: save_txn)
-    @api.transactions.update_transaction(@budget_id, transaction_id, wrapper)
+    @api.transactions.update_transaction(@budget_id, transaction.id, wrapper)
   rescue YNAB::ApiError => e
     raise ApiError, "YNAB API error updating memo: #{e.message}"
   end

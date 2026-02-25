@@ -67,7 +67,7 @@ class MatchesController < ApplicationController
     return if existing_memo.include?(url)
 
     new_memo = existing_memo.blank? ? url : "#{existing_memo} | #{url}"
-    ynab.update_transaction_memo(transaction.id, new_memo)
+    ynab.update_transaction_memo(transaction, new_memo)
   rescue YnabService::ApiError
     # Best-effort memo write
   end
@@ -76,6 +76,6 @@ class MatchesController < ApplicationController
     transaction = ynab.get_transaction(transaction_id)
     url = receipt_url_for_memo
     cleaned = transaction.memo.to_s.gsub(/ \| #{Regexp.escape(url)}/, "").gsub(url, "").strip
-    ynab.update_transaction_memo(transaction_id, cleaned)
+    ynab.update_transaction_memo(transaction, cleaned)
   end
 end
