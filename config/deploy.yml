@@ -10,7 +10,7 @@ servers:
       "add-host": host.docker.internal:host-gateway
 
 proxy:
-  host: 159.65.73.116
+  host: 159.65.73.116.nip.io
   app_port: 3000
 
 registry:
@@ -25,7 +25,7 @@ env:
   clear:
     RAILS_SERVE_STATIC_FILES: true
     RAILS_LOG_TO_STDOUT: true
-    APP_HOST: http://159.65.73.116
+    APP_HOST: http://159.65.73.116.nip.io
   secret:
     - RAILS_MASTER_KEY
 
