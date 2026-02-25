@@ -1,4 +1,6 @@
 Rails.application.routes.draw do
+  get "up", to: proc { [200, {}, ["OK"]] }
+
   root "receipts#index"
 
   get  "/login",  to: "sessions#new",     as: :login
