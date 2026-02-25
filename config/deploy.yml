@@ -1,0 +1,33 @@
+service: ynab-with-receipts
+
+image: h264huan/ynab-with-receipts
+
+servers:
+  web:
+    hosts:
+      - 159.65.73.116
+    options:
+      "add-host": host.docker.internal:host-gateway
+
+proxy:
+  host: 159.65.73.116
+  app_port: 3000
+
+registry:
+  username: h264huan
+  password:
+    - KAMAL_REGISTRY_PASSWORD
+
+builder:
+  arch: amd64
+
+env:
+  clear:
+    RAILS_SERVE_STATIC_FILES: true
+    RAILS_LOG_TO_STDOUT: true
+    APP_HOST: http://159.65.73.116
+  secret:
+    - RAILS_MASTER_KEY
+
+volumes:
+  - "ynab_storage:/rails/storage"

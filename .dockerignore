@@ -1,0 +1,13 @@
+.git
+.gitignore
+log/*
+tmp/*
+db/*.sqlite3
+db/*.sqlite3-*
+storage/*
+.env*
+!.env.example
+node_modules/
+.kamal/secrets
+config/master.key
+config/credentials/*.key
