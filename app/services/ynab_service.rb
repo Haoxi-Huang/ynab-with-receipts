@@ -35,13 +35,13 @@ class YnabService
   end
 
   def update_transaction_memo(transaction, memo)
-    save_txn = YNAB::SaveTransaction.new(
+    existing_txn = YNAB::ExistingTransaction.new(
       account_id: transaction.account_id,
       date: transaction.date,
       amount: transaction.amount,
       memo: memo
     )
-    wrapper = YNAB::PutTransactionWrapper.new(transaction: save_txn)
+    wrapper = YNAB::PutTransactionWrapper.new(transaction: existing_txn)
     @api.transactions.update_transaction(@budget_id, transaction.id, wrapper)
   rescue YNAB::ApiError => e
     raise ApiError, "YNAB API error updating memo: #{e.message}"
