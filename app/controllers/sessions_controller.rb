@@ -17,7 +17,14 @@ class SessionsController < ApplicationController
       u.email = email
       u.name = auth.info.name
     end
-    user.update!(email: email, name: auth.info.name)
+    token_attrs = {
+      email: email,
+      name: auth.info.name,
+      google_access_token: auth.credentials.token,
+      google_token_expires_at: auth.credentials.expires_at ? Time.at(auth.credentials.expires_at) : nil
+    }
+    token_attrs[:google_refresh_token] = auth.credentials.refresh_token if auth.credentials.refresh_token.present?
+    user.update!(token_attrs)
 
     session[:user_id] = user.id
     redirect_to session.delete(:return_to) || root_path, notice: "Signed in successfully."

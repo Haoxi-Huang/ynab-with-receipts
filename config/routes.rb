@@ -11,7 +11,10 @@ Rails.application.routes.draw do
 
   resources :receipts do
     resource :match, only: [:new, :create, :destroy]
+    resource :backup, only: [:create]
   end
+
+  post "/backups/bulk", to: "backups#bulk", as: :bulk_backups
 
   get "/ynab_transactions/search", to: "ynab_transactions#search", as: :search_ynab_transactions
 end

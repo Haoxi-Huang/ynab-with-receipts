@@ -36,6 +36,14 @@ class ReceiptsController < ApplicationController
   end
 
   def destroy
+    if @receipt.backed_up? && current_user.google_refresh_token.present?
+      begin
+        drive = GoogleDriveService.new(current_user)
+        drive.delete_file(@receipt.drive_file_id)
+      rescue GoogleDriveService::DriveError => e
+        Rails.logger.warn("Failed to delete Drive backup: #{e.message}")
+      end
+    end
     @receipt.image.purge
     @receipt.destroy
     redirect_to receipts_path, notice: "Receipt deleted."

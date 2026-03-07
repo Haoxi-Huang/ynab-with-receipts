@@ -20,6 +20,7 @@ gem "image_processing", "~> 1.2"
 gem "omniauth-google-oauth2"
 gem "omniauth-rails_csrf_protection"
 gem "ynab"
+gem "google-apis-drive_v3"
 gem "dotenv-rails", groups: [:development, :test]
 
 group :development, :test do
