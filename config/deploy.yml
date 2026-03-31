@@ -10,7 +10,8 @@ servers:
       "add-host": host.docker.internal:host-gateway
 
 proxy:
-  host: 159.65.73.116.nip.io
+  host: www.ynab-with-receipts.com
+  ssl: true
   app_port: 3000
 
 registry:
@@ -25,7 +26,7 @@ env:
   clear:
     RAILS_SERVE_STATIC_FILES: true
     RAILS_LOG_TO_STDOUT: true
-    APP_HOST: http://159.65.73.116.nip.io
+    APP_HOST: https://www.ynab-with-receipts.com
   secret:
     - RAILS_MASTER_KEY
 
