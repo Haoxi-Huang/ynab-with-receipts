@@ -11,7 +11,7 @@ class ReceiptsController < ApplicationController
   end
 
   def new
-    @receipt = current_user.receipts.build(receipt_date: Date.today)
+    @receipt = current_user.receipts.build
   end
 
   def create

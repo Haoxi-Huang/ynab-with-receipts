@@ -11,6 +11,7 @@
   </head>
 
   <body class="h-full">
+    <template data-spinner-template><%= inline_svg("spinner.svg", class: "animate-spin h-4 w-4") %></template>
     <% if logged_in? %>
       <nav class="bg-white shadow-sm border-b border-gray-200">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
