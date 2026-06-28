@@ -24,7 +24,7 @@ class MatchesController < ApplicationController
 
     write_memo_to_ynab(ynab, transaction)
 
-    redirect_to @receipt, notice: "Transaction linked successfully."
+    redirect_to receipts_path(filter: "unlinked"), notice: "Transaction linked successfully."
   rescue YnabService::ApiError => e
     redirect_to @receipt, alert: "Failed to link: #{e.message}"
   end
