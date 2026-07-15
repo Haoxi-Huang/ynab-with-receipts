@@ -3,8 +3,7 @@ Rails.application.config.middleware.use OmniAuth::Builder do
            Rails.application.credentials.dig(:google, :client_id) || ENV["GOOGLE_CLIENT_ID"],
            Rails.application.credentials.dig(:google, :client_secret) || ENV["GOOGLE_CLIENT_SECRET"],
            scope: "email,profile,https://www.googleapis.com/auth/drive.file",
-           access_type: "offline",
-           prompt: "consent"
+           access_type: "offline"
 end
 
 OmniAuth.config.allowed_request_methods = [:post]
