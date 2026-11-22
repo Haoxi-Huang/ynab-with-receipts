@@ -1,10 +1,10 @@
-ARG RUBY_VERSION=3.4.8
+ARG RUBY_VERSION=4.0.10
 FROM docker.io/library/ruby:$RUBY_VERSION-slim AS base
 
 WORKDIR /rails
 
 RUN apt-get update -qq && \
-    apt-get install --no-install-recommends -y curl libjemalloc2 libsqlite3-0 libvips imagemagick && \
+    apt-get install --no-install-recommends -y curl libjemalloc2 libsqlite3-0 libvips && \
     rm -rf /var/lib/apt/lists /var/cache/apt/archives
 
 ENV RAILS_ENV="production" \
